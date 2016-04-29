@@ -1,2 +1,8 @@
-#ifndef SW_HTTP_H_
-#define SW_HTTP_H_
+#include "App.h"
+
+
+
+ZEND_METHOD( p_ceApp, __construct) {
+
+}
+
