@@ -1,0 +1,13 @@
+// $Id$
+// vim:ft=javascript
+
+// If your extension references something external, use ARG_WITH
+// ARG_WITH("mdphp", "for mdphp support", "no");
+
+// Otherwise, use ARG_ENABLE
+// ARG_ENABLE("mdphp", "enable mdphp support", "no");
+
+if (PHP_MDPHP != "no") {
+	EXTENSION("mdphp", "mdphp.c");
+}
+
