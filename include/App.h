@@ -3,6 +3,8 @@
 
 #include "php.h"
 
+void App();
 
+zend_class_entry* p_ceApp;
 
 #endif
