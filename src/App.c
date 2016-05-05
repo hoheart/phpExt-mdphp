@@ -1,10 +1,13 @@
 #include "App.h"
 
 void App() {
-	ZEND_METHOD(p_ceApp, __construct);
-
-	static zend_function_entry cmApp[] = {
-	ZEND_ME(p_ceApp, __construct, NULL, ZEND_ACC_PUBLIC) { NULL, NULL, NULL } };
+	PHP_METHOD( Framework_App , __construct);
+	PHP_METHOD( Framework_App, Instance);
+	zend_function_entry cmApp[] = {
+			ZEND_ME(Framework_App, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
+			ZEND_ME(Framework_App, Instance, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+			{ NULL,NULL, NULL }
+	};
 
 	zend_class_entry ce;
 	INIT_CLASS_ENTRY(ce, "Framework\\App", cmApp);
@@ -38,14 +41,26 @@ void App() {
 			sizeof("mViewRender") - 1, ZEND_ACC_PROTECTED TSRMLS_CC);
 	zend_declare_property_null(p_ceApp, "mOutputStream",
 			sizeof("mOutputStream") - 1, ZEND_ACC_PROTECTED TSRMLS_CC);
-	zend_declare_property_null(p_ceApp, "mResponse", sizeof("mResponse") - 1,
-	ZEND_ACC_PROTECTED TSRMLS_CC);
-
-	ZEND_METHOD(p_ceApp, __construct);
-	ZEND_METHOD(p_ceApp, Instance);
+	zend_declare_property_null(p_ceApp, "mResponse", sizeof("mResponse") - 1,ZEND_ACC_PROTECTED TSRMLS_CC);
 }
 
-ZEND_METHOD( p_ceApp, __construct) {
-
+PHP_METHOD( Framework_App, __construct) {
+	php_printf("我是__construct方法\n");
 }
+
+PHP_METHOD( Framework_App , Instance ) {
+	char *name;
+	int name_len;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS()TSRMLS_CC, "s", &name, &name_len)
+			== FAILURE) {
+		RETURN_NULL()
+		;
+	}
+	php_printf("Hello ");
+	PHPWRITE(name, name_len);
+	php_printf("!\n");
+}
+
+
 
