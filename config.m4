@@ -6,6 +6,7 @@ if test "$PHP_MDPHP" != "no"; then
 	PHP_SUBST(MDPHP_SHARED_LIBADD)
 	
 	srcFiles="mdphp.c \
-        src/App.c"
+        src/App.c \
+        src/ClassLoader.c"
 	PHP_NEW_EXTENSION(mdphp, $srcFiles, $ext_shared)
 fi

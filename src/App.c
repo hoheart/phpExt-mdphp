@@ -1,8 +1,12 @@
 #include "App.h"
 
+#include "ClassLoader.h"
+
 zend_class_entry* p_ceApp = NULL;
 
 void App(){
+	ClassLoader();
+
 	PHP_METHOD(Framework_App, __construct);
 
 	ZEND_BEGIN_ARG_INFO_EX(Framework_App_Instance, 0, 0, 1)
@@ -10,10 +14,14 @@ void App(){
 	ZEND_END_ARG_INFO()
 	PHP_METHOD(Framework_App, Instance);
 
-	zend_function_entry
-	cmApp[] = {
+	PHP_METHOD(Framework_App, registerAutoloader);
+	PHP_METHOD(Framework_App, init);
+
+	zend_function_entry cmApp[] = {
 		ZEND_ME(Framework_App, __construct, NULL, ZEND_ACC_PROTECTED|ZEND_ACC_CTOR)
 		ZEND_ME(Framework_App, Instance, Framework_App_Instance, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+		ZEND_ME(Framework_App, registerAutoloader, NULL, ZEND_ACC_PUBLIC)
+		ZEND_ME(Framework_App, init, NULL, ZEND_ACC_PUBLIC)
 		{	NULL,NULL, NULL}
 	};
 
@@ -59,26 +67,35 @@ PHP_METHOD( Framework_App, Instance) {
 	static zval* pMe = NULL;
 	if ( NULL == pMe) {
 		//先赋值静态成员变量
-		char* rootDir = NULL;
+		zval* p_zvRootDir = NULL;
 		int iLen = 0;
-		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &rootDir , &iLen )== FAILURE) {
+		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &p_zvRootDir , &iLen )== FAILURE) {
 			RETURN_NULL();
 		}
 
-		php_printf("ddd%d" , iLen );
-		PHPWRITE(rootDir, iLen);
-		php_printf( "\n" );
-		zval* p_zvDirRoot = NULL;
-		MD_MAKE_STD_ZVAL(p_zvDirRoot);
-		ZVAL_STRINGL( p_zvDirRoot , rootDir , iLen );
-		zend_update_static_property(p_ceApp, "ROOT_DIR", sizeof("ROOT_DIR") - 1, p_zvDirRoot TSRMLS_DC);
+		zend_update_static_property(p_ceApp, "ROOT_DIR", sizeof("ROOT_DIR") - 1, p_zvRootDir TSRMLS_DC);
 
-		//chdir(szDirRoot);
+		chdir(Z_STRVAL(*p_zvRootDir));
 
 		MD_MAKE_STD_ZVAL(pMe);
 		object_init_ex(pMe, p_ceApp);
 	}
 
 	RETURN_ZVAL(pMe, 0, 0);
+}
+
+PHP_METHOD(Framework_App, registerAutoloader){
+	zval* pAutoLoader = NULL;
+	MD_MAKE_STD_ZVAL(pAutoLoader);
+	object_init_ex(pAutoLoader, p_ceClsLoader);
+	zend_update_property(p_ceApp , getThis() , "mClassLoader" , sizeof("ClassLoader") - 1 , pAutoLoader);
+
+	zval* fnName;
+	ZVAL_STRING(fnName, "spl_autoload_register");
+	call_user_function(CG(function_table),pAutoLoader,&fnName,NULL,0,NULL TSRMLS_DC);
+}
+
+PHP_METHOD(Framework_App, init){
+
 }
 

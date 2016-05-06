@@ -2,9 +2,11 @@
 use Framework\App;
 
 $r = new \ReflectionClass('Framework\App');
-//print_r($r . '');
+print_r($r . '');
 
-$app = App::Instance('aaa');
-echo "\n";
-print_r( $app ) ;
+$r = new \ReflectionClass('Framework\App\ClassLoader');
+print_r($r . '');
+
+$app = App::Instance('/home/devops/che001');
+$app->registerAutoloader();
 

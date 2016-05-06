@@ -7,4 +7,7 @@
 	#define MD_MAKE_STD_ZVAL(p)						zval _stack_zval_##p; p = &(_stack_zval_##p)
 #endif
 
+#define true  1
+#define false 0
+
 #endif
