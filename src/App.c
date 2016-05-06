@@ -1,12 +1,17 @@
 #include "App.h"
 
 void App() {
-	PHP_METHOD( Framework_App , __construct);
-	PHP_METHOD( Framework_App, Instance);
+	PHP_METHOD(Framework_App, __construct);
+
+	ZEND_BEGIN_ARG_INFO_EX(Framework_App_Instance, 0, 0, 1)
+		ZEND_ARG_INFO(0, rootDir)
+	ZEND_END_ARG_INFO()
+	PHP_METHOD(Framework_App, Instance);
+
 	zend_function_entry cmApp[] = {
-			ZEND_ME(Framework_App, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-			ZEND_ME(Framework_App, Instance, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-			{ NULL,NULL, NULL }
+		ZEND_ME(Framework_App, __construct, NULL, ZEND_ACC_PROTECTED|ZEND_ACC_CTOR)
+		ZEND_ME(Framework_App, Instance, Framework_App_Instance, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+		{	NULL,NULL, NULL}
 	};
 
 	zend_class_entry ce;
@@ -34,7 +39,7 @@ void App() {
 	zend_declare_property_null(p_ceApp, "mServiceManager",
 			sizeof("mServiceManager") - 1, ZEND_ACC_PROTECTED TSRMLS_CC);
 	zend_declare_property_null(p_ceApp, "mRequest", sizeof("mRequest") - 1,
-	ZEND_ACC_PROTECTED TSRMLS_CC);
+			ZEND_ACC_PROTECTED TSRMLS_CC);
 	zend_declare_property_null(p_ceApp, "mCurrentController",
 			sizeof("mCurrentController") - 1, ZEND_ACC_PROTECTED TSRMLS_CC);
 	zend_declare_property_null(p_ceApp, "mViewRender",
@@ -48,19 +53,21 @@ PHP_METHOD( Framework_App, __construct) {
 	php_printf("我是__construct方法\n");
 }
 
-PHP_METHOD( Framework_App , Instance ) {
-	char *name;
-	int name_len;
+PHP_METHOD( Framework_App, Instance) {
+	static zval* pMe = NULL;
+	if( NULL == pMe ){
+		//先赋值静态成员变量
+		zval* pDirRoot;
+		if ( zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &pDirRoot) == FAILURE) {
+			RETURN_NULL();
+		}
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS()TSRMLS_CC, "s", &name, &name_len)
-			== FAILURE) {
-		RETURN_NULL()
-		;
+		zend_update_static_property( p_ceApp , "ROOT_DIR", sizeof("ROOT_DIR") - 1, pDirRoot TSRMLS_DC);
+
+		MAKE_STD_ZVAL(pMe);
+	    object_init_ex(pMe, p_ceApp);
 	}
-	php_printf("Hello ");
-	PHPWRITE(name, name_len);
-	php_printf("!\n");
+
+	RETURN_ZVAL(pMe , 0 , 0 );
 }
-
-
 
