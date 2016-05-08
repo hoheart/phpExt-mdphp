@@ -1,12 +1,13 @@
 <?php
 use Framework\App;
 
-$r = new \ReflectionClass('Framework\App');
-print_r($r . '');
+$app = new \ReflectionClass('Framework\App');
+print_r($app . '');
 
-$r = new \ReflectionClass('Framework\App\ClassLoader');
-print_r($r . '');
+$cls = new \ReflectionClass('Framework\App\ClassLoader');
+print_r($cls . '');
 
 $app = App::Instance('/home/devops/che001');
 $app->registerAutoloader();
+print_r( $app );
 

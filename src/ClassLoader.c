@@ -1,5 +1,7 @@
 #include "ClassLoader.h"
 
+zend_class_entry* p_ceClsLoader = NULL;
+
 void ClassLoader(){
 	PHP_METHOD(Framework_App_ClassLoader, __construct);
 	PHP_METHOD(Framework_App_ClassLoader, register2System);
@@ -41,12 +43,12 @@ PHP_METHOD(Framework_App_ClassLoader, __construct){
 PHP_METHOD(Framework_App_ClassLoader, register2System){
 	static zend_bool bRegistered = false;
 	if( ! bRegistered ){
-//		bRegistered = true;
-//
-//		zval fnName;
-//		ZVAL_STRING(&fnName, "spl_autoload_register");
-//		zval* this = getThis();
-//		call_user_function(CG(function_table),&this,&fnName,NULL,1,NULL TSRMLS_DC);
+		bRegistered = true;
+
+		zval fnName;
+		ZVAL_STRING(&fnName, "spl_autoload_register");
+		zval ret;
+		call_user_function(NULL,getThis(),&fnName,&ret,0,NULL TSRMLS_DC);
 	}
 }
 

@@ -5,7 +5,7 @@
 
 #include "mdtype.h"
 
-zend_class_entry* p_ceClsLoader;
+extern zend_class_entry* p_ceClsLoader;
 void ClassLoader();
 
 #endif

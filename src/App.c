@@ -91,8 +91,10 @@ PHP_METHOD(Framework_App, registerAutoloader){
 	zend_update_property(p_ceApp , getThis() , "mClassLoader" , sizeof("ClassLoader") - 1 , pAutoLoader);
 
 	zval* fnName;
-	ZVAL_STRING(fnName, "spl_autoload_register");
-	call_user_function(CG(function_table),pAutoLoader,&fnName,NULL,0,NULL TSRMLS_DC);
+	MD_MAKE_STD_ZVAL(fnName);
+	ZVAL_STRING(fnName, "register2System");
+	zval ret;
+	call_user_function(NULL,pAutoLoader,fnName,&ret,0,NULL TSRMLS_DC);
 }
 
 PHP_METHOD(Framework_App, init){

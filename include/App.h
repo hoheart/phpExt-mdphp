@@ -5,7 +5,7 @@
 
 #include "mdtype.h"
 
-zend_class_entry* p_ceApp;
+extern zend_class_entry* p_ceApp;
 void App();
 
 #endif
