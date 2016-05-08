@@ -12,6 +12,6 @@
 #define p_meMdphp &mdphp_module_entry
 extern zend_module_entry mdphp_module_entry;
 
-PHP_MINIT_FUNCTION(mdphp);
+PHP_MINIT_FUNCTION (mdphp);
 
 #endif

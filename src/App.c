@@ -1,6 +1,8 @@
 #include "App.h"
 
-void App() {
+zend_class_entry* p_ceApp = NULL;
+
+void App(){
 	PHP_METHOD(Framework_App, __construct);
 
 	ZEND_BEGIN_ARG_INFO_EX(Framework_App_Instance, 0, 0, 1)
@@ -8,7 +10,8 @@ void App() {
 	ZEND_END_ARG_INFO()
 	PHP_METHOD(Framework_App, Instance);
 
-	zend_function_entry cmApp[] = {
+	zend_function_entry
+	cmApp[] = {
 		ZEND_ME(Framework_App, __construct, NULL, ZEND_ACC_PROTECTED|ZEND_ACC_CTOR)
 		ZEND_ME(Framework_App, Instance, Framework_App_Instance, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
 		{	NULL,NULL, NULL}
@@ -50,24 +53,32 @@ void App() {
 }
 
 PHP_METHOD( Framework_App, __construct) {
-	php_printf("我是__construct方法\n");
 }
 
 PHP_METHOD( Framework_App, Instance) {
 	static zval* pMe = NULL;
-	if( NULL == pMe ){
+	if ( NULL == pMe) {
 		//先赋值静态成员变量
-		zval* pDirRoot;
-		if ( zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &pDirRoot) == FAILURE) {
+		char* rootDir = NULL;
+		int iLen = 0;
+		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &rootDir , &iLen )== FAILURE) {
 			RETURN_NULL();
 		}
 
-		zend_update_static_property( p_ceApp , "ROOT_DIR", sizeof("ROOT_DIR") - 1, pDirRoot TSRMLS_DC);
+		php_printf("ddd%d" , iLen );
+		PHPWRITE(rootDir, iLen);
+		php_printf( "\n" );
+		zval* p_zvDirRoot = NULL;
+		MD_MAKE_STD_ZVAL(p_zvDirRoot);
+		ZVAL_STRINGL( p_zvDirRoot , rootDir , iLen );
+		zend_update_static_property(p_ceApp, "ROOT_DIR", sizeof("ROOT_DIR") - 1, p_zvDirRoot TSRMLS_DC);
 
-		MAKE_STD_ZVAL(pMe);
-	    object_init_ex(pMe, p_ceApp);
+		//chdir(szDirRoot);
+
+		MD_MAKE_STD_ZVAL(pMe);
+		object_init_ex(pMe, p_ceApp);
 	}
 
-	RETURN_ZVAL(pMe , 0 , 0 );
+	RETURN_ZVAL(pMe, 0, 0);
 }
 

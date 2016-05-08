@@ -3,8 +3,9 @@
 
 #include "php.h"
 
-void App();
+#include "mdtype.h"
 
 zend_class_entry* p_ceApp;
+void App();
 
 #endif
