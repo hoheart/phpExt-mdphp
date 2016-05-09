@@ -76,24 +76,25 @@ PHP_METHOD( Framework_App, Instance) {
 
 		chdir(Z_STRVAL(zvRootDir));
 
-		MD_MAKE_STD_ZVAL(pMe);
-		object_init_ex(pMe, p_ceApp);
+		pMe = createObj(p_ceApp);
+
+		zval* pAutoLoader = createObj(p_ceClsLoader);
+//zend_update_property(p_ceApp , pMe , "mClassLoader" , sizeof("mClassLoader") - 1 , pAutoLoader);
+
 	}
 
-	RETURN_ZVAL(pMe, 0, 0);
+	RETURN_ZVAL(pMe , 0 , 0);
 }
 
 PHP_METHOD(Framework_App, registerAutoloader){
-	zval zvAutoLoader = {0};
-	object_init_ex(&zvAutoLoader, p_ceClsLoader);
-	zend_update_property(p_ceApp , getThis() , "mClassLoader" , sizeof("mClassLoader") - 1 , &zvAutoLoader);
-	zval_ptr_dtor(&zvAutoLoader);
+//	zval* pAutoLoader = createObj(p_ceClsLoader);
+//	zend_update_property(p_ceApp , getThis() , "mClassLoader" , sizeof("mClassLoader") - 1 , pAutoLoader);
+//	zvalDel(pAutoLoader);
+//	del(pAutoLoader);
 
-	zval zvFnName = {0};
-	ZVAL_STRING(&zvFnName, "register2System");
-	zval ret = {0};
-	call_user_function(NULL,&zvAutoLoader,&zvFnName,&ret,0,NULL TSRMLS_DC);
-	zval_ptr_dtor(&zvFnName);
+//	zval* ret = call(pAutoLoader , "register2System" , NULL);
+//	zvalDel(ret);
+//	del(ret);
 }
 
 PHP_METHOD(Framework_App, init){

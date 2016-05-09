@@ -45,15 +45,39 @@ PHP_METHOD(Framework_App_ClassLoader, register2System){
 	if( ! bRegistered ){
 		bRegistered = true;
 
-		zval zvFnName;
+		zval zvFnName = {0};
 		ZVAL_STRING(&zvFnName, "spl_autoload_register");
-		zval ret;
+		zval ret = {0};
 		call_user_function(NULL,getThis(),&zvFnName,&ret,0,NULL TSRMLS_DC);
 		zval_ptr_dtor(&zvFnName);
+		zval_ptr_dtor(&ret);
 	}
 }
 
 PHP_METHOD(Framework_App_ClassLoader, autoload){
+//	zval zvClsName = {0};
+//	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &zvClsName )== FAILURE) {
+//		RETURN_FALSE;
+//	}
+//
+//	zval zvModuleDir = {0};
+//	zval zvModuleAlias = {0};
+//	zval zvModuleName = {0};
+//	zval zvCallerModule = {0};
+//
+//	zval zvFnName = {0};
+//	HashTable
+//	ZVAL_STRING(&zvFnName, "GetModuleNameByClass");
+//	call_user_function(NULL,p_ceApp,&zvFnName,&zvModuleName,1,zvClsName TSRMLS_DC);
+//	zval_ptr_dtor(&zvFnName);
+//	ZVAL_STRING(&zvFnName, "GetCallerModule");
+//	call_user_function(NULL,p_ceApp,&zvFnName,&zvCallerModule,0,NULL TSRMLS_DC);
+//	zval_ptr_dtor(&zvFnName);
+//
+//	zval* p_zvCallerAlias = zend_hash_index_find(Z_ARR(zvModuleName),0);
+//	zval* p_zvCallerName = zend_hash_index_find(Z_ARR(zvModuleName),1);
+//
+//	if( 0 == strcmp( Z_STRVAL(*p_zvCallerAlias) , Z_STRVAL(*p_zvCallerAlias) ) )
 
 }
 
