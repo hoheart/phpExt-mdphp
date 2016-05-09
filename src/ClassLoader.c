@@ -45,10 +45,11 @@ PHP_METHOD(Framework_App_ClassLoader, register2System){
 	if( ! bRegistered ){
 		bRegistered = true;
 
-		zval fnName;
-		ZVAL_STRING(&fnName, "spl_autoload_register");
+		zval zvFnName;
+		ZVAL_STRING(&zvFnName, "spl_autoload_register");
 		zval ret;
-		call_user_function(NULL,getThis(),&fnName,&ret,0,NULL TSRMLS_DC);
+		call_user_function(NULL,getThis(),&zvFnName,&ret,0,NULL TSRMLS_DC);
+		zval_ptr_dtor(&zvFnName);
 	}
 }
 

@@ -67,15 +67,14 @@ PHP_METHOD( Framework_App, Instance) {
 	static zval* pMe = NULL;
 	if ( NULL == pMe) {
 		//先赋值静态成员变量
-		zval* p_zvRootDir = NULL;
-		int iLen = 0;
-		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &p_zvRootDir , &iLen )== FAILURE) {
+		zval zvRootDir = {0};
+		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &zvRootDir )== FAILURE) {
 			RETURN_NULL();
 		}
 
-		zend_update_static_property(p_ceApp, "ROOT_DIR", sizeof("ROOT_DIR") - 1, p_zvRootDir TSRMLS_DC);
+		zend_update_static_property(p_ceApp, "ROOT_DIR", sizeof("ROOT_DIR") - 1, &zvRootDir TSRMLS_DC);
 
-		chdir(Z_STRVAL(*p_zvRootDir));
+		chdir(Z_STRVAL(zvRootDir));
 
 		MD_MAKE_STD_ZVAL(pMe);
 		object_init_ex(pMe, p_ceApp);
@@ -85,16 +84,16 @@ PHP_METHOD( Framework_App, Instance) {
 }
 
 PHP_METHOD(Framework_App, registerAutoloader){
-	zval* pAutoLoader = NULL;
-	MD_MAKE_STD_ZVAL(pAutoLoader);
-	object_init_ex(pAutoLoader, p_ceClsLoader);
-	zend_update_property(p_ceApp , getThis() , "mClassLoader" , sizeof("ClassLoader") - 1 , pAutoLoader);
+	zval zvAutoLoader = {0};
+	object_init_ex(&zvAutoLoader, p_ceClsLoader);
+	zend_update_property(p_ceApp , getThis() , "mClassLoader" , sizeof("mClassLoader") - 1 , &zvAutoLoader);
+	zval_ptr_dtor(&zvAutoLoader);
 
-	zval* fnName;
-	MD_MAKE_STD_ZVAL(fnName);
-	ZVAL_STRING(fnName, "register2System");
-	zval ret;
-	call_user_function(NULL,pAutoLoader,fnName,&ret,0,NULL TSRMLS_DC);
+	zval zvFnName = {0};
+	ZVAL_STRING(&zvFnName, "register2System");
+	zval ret = {0};
+	call_user_function(NULL,&zvAutoLoader,&zvFnName,&ret,0,NULL TSRMLS_DC);
+	zval_ptr_dtor(&zvFnName);
 }
 
 PHP_METHOD(Framework_App, init){

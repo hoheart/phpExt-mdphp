@@ -13,5 +13,6 @@
 extern zend_module_entry mdphp_module_entry;
 
 PHP_MINIT_FUNCTION (mdphp);
+PHP_MSHUTDOWN_FUNCTION(mdphp);
 
 #endif

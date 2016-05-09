@@ -1,5 +1,8 @@
 #include "php_mdphp.h"
 
+#include "include/App.h"
+#include "include/Config.h"
+
 //module entry
 zend_module_entry mdphp_module_entry = {
 #if ZEND_MODULE_API_NO >= 20010901
@@ -22,10 +25,12 @@ ZEND_GET_MODULE(mdphp)
 #endif
 
 PHP_MINIT_FUNCTION( mdphp) {
-#include "include/App.h"
 	App();
-//#include "src/Config.c"
 //	Config();
 
+	return SUCCESS;
+}
+
+PHP_MSHUTDOWN_FUNCTION(mdphp) {
 	return SUCCESS;
 }
